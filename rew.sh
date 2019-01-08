@@ -16,3 +16,5 @@ then
 fi
 ' --tag-name-filter cat -- --branches --tags
 
+git push --force
+
