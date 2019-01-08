@@ -1,33 +1,33 @@
-#
+#!/usr/bin/python3
+# -*- encoding=utf8 -*-
 
 import time
 
-#from selenium.webdriver.common.by import By
-#from selenium.webdriver.support.ui import WebDriverWait
-#from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 class WebElement(object):
 
-    _locators = {}
+    _locator = ('', '')
     _web_driver = None
     _timeout = 10
 
     def __init__(self, timeout=10, **kwargs):
         self._timeout = timeout
         for attr in kwargs:
-            self._locators[attr] = kwargs.get(attr)
+            self._locator = (str(attr), str(kwargs.get(attr)))
 
-    def _wait(self, web_driver, timeout=10):
+    def find(self, timeout=10):
         # TODO: how to change By.XPATH?
 
         element = None
 
         try:
-            pass
-            # element = WebDriverWait(web_driver, timeout).until(
-            #    EC.presence_of_element_located((By.XPATH, '//*[contains(@class, "asns-spinner")]'))
-            # )
+            element = WebDriverWait(self._web_driver, timeout).until(
+               EC.presence_of_element_located(self._locator)
+            )
         except:
             # TODO: show beautiful RED error message with the description of the issue.
             print('Element not found on the page!')  # Ignore timeout errors
@@ -36,9 +36,17 @@ class WebElement(object):
 
     def wait_to_be_clickable(self, timeout=10):
         """ Wait until the element will be ready for click. """
-        # TODO: wait here
-        print(self._web_driver)
-        time.sleep(1)
+
+        element = None
+
+        try:
+            element = WebDriverWait(self._web_driver, timeout).until(
+                EC.element_to_be_clickable(self._locator)
+            )
+        except:
+            pass  # Ignore timeout errors
+
+        return element
 
     def wait_for_element(self, timeout=10):
         raise NotImplemented
@@ -61,16 +69,18 @@ class WebElement(object):
     def get_attribute(self):
         raise NotImplemented
 
-    def _set_value(self, web_driver, value):
-        # TODO: wait until object will be ready and set value to this object.
-        element = self._wait(web_driver=web_driver)
-        print('set value:', value)
-        # element.clear()
-        # element.sendkeys(value)
+    def _set_value(self, web_driver, value, clear=True):
+        element = self.find()
+
+        if clear:
+            element.clear()
+
+        element.send_keys(value)
 
     def click(self):
         """ Wait and click the element. """
-        raise NotImplemented
+        element = self.wait_to_be_clickable()
+        element.click()
 
     def smart_click(self, timeout=0.5, x_offset=0, y_offset=0):
         """ Click any element with Selenium actions chain. """
@@ -88,19 +98,18 @@ class ManyWebElements(WebElement):
         elements = self._wait(self._web_driver)
         return elements[item]
 
-    def _wait(self, web_driver, timeout=10):
+    def find(self, timeout=10):
         # TODO: how to change By.XPATH?
 
         elements = []
 
         try:
-            pass
-            # elements = WebDriverWait(web_driver, timeout).until(
-            #    EC.presence_of_element_located((By.XPATH, '//*[contains(@class, "asns-spinner")]'))
-            # )
+            elements = WebDriverWait(self._web_driver, timeout).until(
+               EC.presence_of_all_elements_located(self._locator)
+            )
         except:
             # TODO: show beautiful RED error message with the description of the issue.
-            print('Element not found on the page!')  # Ignore timeout errors
+            print('Elements not found on the page!')  # Ignore timeout errors
 
         return elements
 
@@ -112,7 +121,8 @@ class ManyWebElements(WebElement):
         raise NotImplemented
 
     def get_text(self):
-        raise NotImplemented
+        elements = self.find()
+        return [str(element.text) for element in elements]
 
     def get_attribute(self):
         raise NotImplemented
