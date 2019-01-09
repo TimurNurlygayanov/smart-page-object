@@ -3,7 +3,7 @@
 
 import time
 
-from selenium.webdriver.common.by import By
+from selenium.webdriver import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -13,14 +13,16 @@ class WebElement(object):
     _locator = ('', '')
     _web_driver = None
     _timeout = 10
+    _wait_after_click = False  # TODO: how we can wait after click?
 
-    def __init__(self, timeout=10, **kwargs):
+    def __init__(self, timeout=10, wait_after_click=False, **kwargs):
         self._timeout = timeout
+        self._wait_after_click = wait_after_click
+
         for attr in kwargs:
             self._locator = (str(attr), str(kwargs.get(attr)))
 
     def find(self, timeout=10):
-        # TODO: how to change By.XPATH?
 
         element = None
 
@@ -57,14 +59,24 @@ class WebElement(object):
 
     def is_presented(self):
         """ Check that element is presented on the page. """
-        raise NotImplemented
+
+        element = self.find(timeout=0.1)
+        return element is not None
 
     def is_visible(self):
         """ Check is the element visible or not. """
         raise NotImplemented
 
     def get_text(self):
-        raise NotImplemented
+        element = self.find()
+        text = ''
+
+        try:
+            text = str(element.text)
+        except Exception as e:
+            print('Error: {0}'.format(e))
+
+        return text
 
     def get_attribute(self):
         raise NotImplemented
@@ -77,10 +89,13 @@ class WebElement(object):
 
         element.send_keys(value)
 
-    def click(self):
+    def click(self, hold_seconds=0, x_offset=0, y_offset=0):
         """ Wait and click the element. """
         element = self.wait_to_be_clickable()
-        element.click()
+
+        action = ActionChains(self._web_driver)
+        action.move_to_element_with_offset(element, x_offset, y_offset).\
+            pause(hold_seconds).click(on_element=element).perform()
 
     def smart_click(self, timeout=0.5, x_offset=0, y_offset=0):
         """ Click any element with Selenium actions chain. """
@@ -95,7 +110,7 @@ class ManyWebElements(WebElement):
 
     def __getitem__(self, item):
         """ Get list of elements and try to return required element. """
-        elements = self._wait(self._web_driver)
+        elements = self.find()
         return elements[item]
 
     def find(self, timeout=10):
@@ -118,11 +133,24 @@ class ManyWebElements(WebElement):
         raise NotImplemented
 
     def count(self):
-        raise NotImplemented
+        elements = self.find()
+        return len(elements)
 
     def get_text(self):
         elements = self.find()
-        return [str(element.text) for element in elements]
+        result = []
+
+        for element in elements:
+            text = ''
+
+            try:
+                text = str(element.text)
+            except Exception as e:
+                print('Error: {0}'.format(e))
+
+            result.append(text)
+
+        return result
 
     def get_attribute(self):
         raise NotImplemented
