@@ -41,6 +41,7 @@ class WebPage(object):
 
     def go_back(self):
         self._web_driver.back()
+        self.wait_page_loaded()
 
     def refresh(self):
         self._web_driver.refresh()
@@ -204,6 +205,22 @@ class WebPageDA(WebPage):
     upgrade_to_business_button = ManyWebElements(xpath='//span[text()="Upgrade to Business"]')
     see_all_features_links = ManyWebElements(xpath='//a[text()="See all features"]')
     upgrade_links = ManyWebElements(xpath='//span[text()="Upgrade"]')
+    ads_count = WebElement(xpath='(//div//h4//span)[1]')
+    pubs_count = WebElement(xpath='(//div//h4//span)[2]')
+    times_seen_info = WebElement(xpath='(//div//h4//span)[3]')
+    first_seen_info = WebElement(xpath='(//div//h4//span)[4]')
+    last_seen_info = WebElement(xpath='(//div//h4//span)[5]')
+    contries_list = ManyWebElements(xpath='//div[contains(@class, "legend_country")]/div')
+    contries_percents = ManyWebElements(xpath='//div[contains(@class, "legend_percent")]/div')
+    countries_numbers = ManyWebElements(xpath='//div[contains(@class, "legend_total")]/div')
+    ad_types = ManyWebElements(xpath='//div[contains(@class, "AdTypeChartStyles__ad_type")]//span')
+    devices_types = ManyWebElements(xpath='//div[contains(@class, "DeviceStyles__device")]//span')
+    domains_list = ManyWebElements(xpath=('//div[contains(@class, "TableStyles__table_row__item")]'
+                                          '//a[contains(text(), ".")]'))
+    publishers_data = ManyWebElements(xpath='//div[contains(@class, "TableStyles__table_row__item")]//span')
+    ads_tab_main_numbers = ManyWebElements(xpath='//*[contains(@class, "asns-legend__number")]')
+    ads_table_data = ManyWebElements(xpath='//td[contains(@class, "asns-table-media-ad-cell--text")]'
+                                         '')
 
     # Landing page elements:
     landing_pages_titles = ManyWebElements(xpath='//div[contains(@class,"asns-landing-title")]')
