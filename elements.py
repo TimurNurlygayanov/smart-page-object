@@ -23,6 +23,7 @@ class WebElement(object):
             self._locator = (str(attr), str(kwargs.get(attr)))
 
     def find(self, timeout=10):
+        """ Find element on the page. """
 
         element = None
 
@@ -50,12 +51,11 @@ class WebElement(object):
 
         return element
 
-    def wait_for_element(self, timeout=10):
-        raise NotImplemented
-
     def is_clickable(self):
         """ Check is element ready for click or not. """
-        raise NotImplemented
+
+        element = self.wait_to_be_clickable(timeout=0.1)
+        return element is not None
 
     def is_presented(self):
         """ Check that element is presented on the page. """
@@ -65,9 +65,17 @@ class WebElement(object):
 
     def is_visible(self):
         """ Check is the element visible or not. """
-        raise NotImplemented
+
+        element = self.find(timeout=0.1)
+
+        if element:
+            return element.is_displayed()
+
+        return False
 
     def get_text(self):
+        """ Get text of the element. """
+
         element = self.find()
         text = ''
 
@@ -78,8 +86,13 @@ class WebElement(object):
 
         return text
 
-    def get_attribute(self):
-        raise NotImplemented
+    def get_attribute(self, attr_name):
+        """ Get attribute of the element. """
+
+        element = self.find()
+
+        if element:
+            return element.get_attribute(attr_name)
 
     def _set_value(self, web_driver, value, clear=True):
         element = self.find()
@@ -91,19 +104,26 @@ class WebElement(object):
 
     def click(self, hold_seconds=0, x_offset=0, y_offset=0):
         """ Wait and click the element. """
+
         element = self.wait_to_be_clickable()
 
         action = ActionChains(self._web_driver)
         action.move_to_element_with_offset(element, x_offset, y_offset).\
             pause(hold_seconds).click(on_element=element).perform()
 
-    def smart_click(self, timeout=0.5, x_offset=0, y_offset=0):
-        """ Click any element with Selenium actions chain. """
-        raise NotImplemented
-
     def highlight_and_make_screenshot(self, file_name='element.png'):
         """ Highlight element and make the screen-shot of all page. """
-        raise NotImplemented
+
+        element = self.find()
+
+        # Scroll page to the element:
+        self._web_driver.execute_script("arguments[0].scrollIntoView();", element)
+
+        # Add red border to the style:
+        self._web_driver.execute_script("arguments[0].style.border='3px solid red'", element)
+
+        # Make screen-shot of the page:
+        self._web_driver.save_screenshot(file_name)
 
 
 class ManyWebElements(WebElement):
@@ -114,7 +134,7 @@ class ManyWebElements(WebElement):
         return elements[item]
 
     def find(self, timeout=10):
-        # TODO: how to change By.XPATH?
+        """ Find elements on the page. """
 
         elements = []
 
@@ -152,12 +172,31 @@ class ManyWebElements(WebElement):
 
         return result
 
-    def get_attribute(self):
-        raise NotImplemented
+    def get_attribute(self, attr_name):
+        """ Get attribute of all elements. """
+
+        results = []
+        elements = self.find()
+
+        for element in elements:
+            results.append(element.get_attribute(attr_name))
+
+        return results
 
     def highlight_and_make_screenshot(self, file_name='element.png'):
         """ Highlight elements and make the screen-shot of all page. """
-        raise NotImplemented
+
+        elements = self.find()
+
+        for element in elements:
+            # Scroll page to the element:
+            self._web_driver.execute_script("arguments[0].scrollIntoView();", element)
+
+            # Add red border to the style:
+            self._web_driver.execute_script("arguments[0].style.border='3px solid red'", element)
+
+        # Make screen-shot of the page:
+        self._web_driver.save_screenshot(file_name)
 
 
 e = WebElement(xpath='test')
