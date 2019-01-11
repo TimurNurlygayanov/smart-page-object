@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- encoding=utf8 -*-
 
-import time
+from termcolor import colored
 
 from selenium.webdriver import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
@@ -32,8 +32,7 @@ class WebElement(object):
                EC.presence_of_element_located(self._locator)
             )
         except:
-            # TODO: show beautiful RED error message with the description of the issue.
-            print('Element not found on the page!')  # Ignore timeout errors
+            print(colored('Element not found on the page!', 'red'))
 
         return element
 
@@ -47,7 +46,7 @@ class WebElement(object):
                 EC.element_to_be_clickable(self._locator)
             )
         except:
-            pass  # Ignore timeout errors
+            print(colored('Element not found on the page!', 'red'))
 
         return element
 
@@ -95,6 +94,8 @@ class WebElement(object):
             return element.get_attribute(attr_name)
 
     def _set_value(self, web_driver, value, clear=True):
+        """ Set value to the input element. """
+
         element = self.find()
 
         if clear:
@@ -130,6 +131,7 @@ class ManyWebElements(WebElement):
 
     def __getitem__(self, item):
         """ Get list of elements and try to return required element. """
+
         elements = self.find()
         return elements[item]
 
@@ -143,20 +145,27 @@ class ManyWebElements(WebElement):
                EC.presence_of_all_elements_located(self._locator)
             )
         except:
-            # TODO: show beautiful RED error message with the description of the issue.
-            print('Elements not found on the page!')  # Ignore timeout errors
+            print(colored('Elements not found on the page!', 'red'))
 
         return elements
 
     def _set_value(self, web_driver, value):
-        """ Not applicable for the list of elements. """
-        raise NotImplemented
+        """ Note: this action is not applicable for the list of elements. """
+        raise NotImplemented('This action is not applicable for the list of elements')
+
+    def click(self, hold_seconds=0, x_offset=0, y_offset=0):
+        """ Note: this action is not applicable for the list of elements. """
+        raise NotImplemented('This action is not applicable for the list of elements')
 
     def count(self):
+        """ Get count of elements. """
+
         elements = self.find()
         return len(elements)
 
     def get_text(self):
+        """ Get text of elements. """
+
         elements = self.find()
         result = []
 
@@ -197,6 +206,3 @@ class ManyWebElements(WebElement):
 
         # Make screen-shot of the page:
         self._web_driver.save_screenshot(file_name)
-
-
-e = WebElement(xpath='test')
