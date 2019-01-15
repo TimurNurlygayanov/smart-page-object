@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- encoding=utf8 -*-
 
+import time
 from termcolor import colored
 
 from selenium.webdriver import ActionChains
@@ -36,7 +37,7 @@ class WebElement(object):
 
         return element
 
-    def wait_to_be_clickable(self, timeout=10):
+    def wait_to_be_clickable(self, timeout=10, check_visibility=True):
         """ Wait until the element will be ready for click. """
 
         element = None
@@ -46,7 +47,10 @@ class WebElement(object):
                 EC.element_to_be_clickable(self._locator)
             )
         except:
-            print(colored('Element not found on the page!', 'red'))
+            print(colored('Element not clickable!', 'red'))
+
+        if check_visibility:
+            self.wait_until_not_visible()
 
         return element
 
@@ -71,6 +75,31 @@ class WebElement(object):
             return element.is_displayed()
 
         return False
+
+    def wait_until_not_visible(self, timeout=10):
+
+        element = None
+
+        try:
+            element = WebDriverWait(self._web_driver, timeout).until(
+                EC.visibility_of_element_located(self._locator)
+            )
+        except:
+            print(colored('Element not visible!', 'red'))
+
+        if element:
+            js = 'return (arguments[0].offsetHeight === 0 && arguments[0].offsetWidth === 0);'
+            visibility = self._web_driver.execute_script(js, element)
+            iteration = 0
+
+            while not visibility and iteration < timeout * 10:
+                time.sleep(0.1)
+
+                iteration += 1
+
+                visibility = self._web_driver.execute_script(js, element)
+
+        return element
 
     def get_text(self):
         """ Get text of the element. """
@@ -103,7 +132,7 @@ class WebElement(object):
 
         element.send_keys(value)
 
-    def click(self, hold_seconds=0, x_offset=0, y_offset=0):
+    def click(self, hold_seconds=0, x_offset=1, y_offset=1):
         """ Wait and click the element. """
 
         element = self.wait_to_be_clickable()
