@@ -2,9 +2,7 @@
 # -*- encoding=utf8 -*-
 
 # TODO: write article about __elements nasledovanie hack.
-# TODO: switch to iframe
-# TODO: overlapping elements ???
-# TODO: add right click
+
 
 import time
 from elements import WebElement, ManyWebElements
@@ -12,7 +10,6 @@ from elements import WebElement, ManyWebElements
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
 
 
 class WebPage(object):
@@ -132,7 +129,7 @@ class WebPage(object):
                 page_loaded = new_source == source
                 source = new_source
 
-            # Wait when spinner of page loading will disappear:
+            # Wait when some element will disappear:
             if page_loaded and wait_for_xpath_to_disappear:
                 bad_element = None
 
