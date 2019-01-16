@@ -11,6 +11,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from utils import KNOWN_JS_ISSUES
+
 
 class WebPage(object):
 
@@ -154,3 +156,137 @@ class WebPage(object):
 
         # Go up:
         self._web_driver.execute_script('window.scrollTo(document.body.scrollHeight, 0);')
+
+
+class WebPageDA(WebPage):
+
+    sort_by_times_seen = WebElement(xpath='//span[contains(text(), "Times Seen")]')
+    table_data_cells = ManyWebElements(xpath='//*[contains(@class, "-ad-cell-") or contains(@class, '
+                                             '"ad-cell__number") or contains(@class, "ad-cell__date")]')
+    table_data_text_fields = ManyWebElements(xpath='//*[contains(@class, "asns-text-ad-item")]//span')
+    next_button = WebElement(xpath='//span[text()="Next"]')
+    search_field = WebElement(xpath='(//input[@placeholder="Search"])[2]')
+    show_advanced_filters = WebElement(xpath='//span[contains(text(), "Advanced filters")]')
+    search_button = WebElement(xpath='//button[contains(@class, "searchButton")]')
+    filter_by = WebElement(xpath='//div[text()="Ad"]')
+    filter_method = WebElement(xpath='//div[text()="Text Contains"]')
+    advanced_filter_text = WebElement(xpath='//input[@placeholder="Text"]')
+    apply_filter_button = WebElement(xpath='//span[text()="Apply Filters"]')
+    add_one_more_filter_button = WebElement(xpath='//span[text()="Add one more"]')
+    first_advanced_filter = WebElement(xpath='(//div[contains(@class, "item__layout")])[1]//input')
+    second_advanced_filter = WebElement(xpath='(//div[contains(@class, "item__layout")])[2]//input')
+    ads_tab = WebElement(xpath='//span[text()="Ads"]')
+    ads_main_numbers = ManyWebElements(xpath='//*[@class="asns-legend__number"]')
+    image_ads_tab = WebElement(xpath='//span[text()="Image"]')
+    landing_pages_tab = WebElement(xpath='//span[text()="Landing Pages"]')
+    text_ads_tab = WebElement(xpath='//span[text()="Text"]')
+    html_ads_tab = WebElement(xpath='//span[text()="HTML"]')
+    export_button = WebElement(xpath='(//span[text()="Export"])[1]')
+    last_page_link = WebElement(xpath=('//span[contains(@class, "pagination__last-item")]//'
+                                       'span[contains(@class, "link__content")]'))
+    last_page_text = WebElement(xpath='//span[contains(@class, "pagination__last-item")]')
+    all_ads = ManyWebElements(xpath='//tr[@class="asns-table-creative-row"]')
+    ads_links = ManyWebElements(xpath='//td/a|//td/div/a')
+    role_switcher = WebElement(xpath='//button[contains(@class, "platform_select")]')
+    role_advertiser = WebElement(xpath='//div[text()="advertiser"]')
+    role_publisher = WebElement(xpath='//div/div[contains(text(), "publisher")]')
+    role_current = WebElement(xpath='(//button/div[contains(@class, "-select-trigger-label")])[1]')
+    period_filter = WebElement(xpath='(//span[contains(@class, "Styles__filterCaption")])[3]')
+    device_filter = WebElement(xpath='(//span[contains(@class, "Styles__filterCaption")])[2]')
+    country_filter = WebElement(xpath='(//span[contains(@class, "Styles__filterCaption")])[1]')
+    period_all_time = WebElement(xpath='//span[text()="All Time"]')
+    device_desktop = WebElement(xpath='//span[text()="Desktop"]')
+    country_us = WebElement(xpath='//span[text()="United States"]')
+    overview_image_ads_links = ManyWebElements(xpath='//a[contains(@class, "MediaItemStyles__item_ad_link")]')
+    overview_html_ads_links = ManyWebElements(xpath='//a[contains(@class, "InfoStyles__item_ad_link")]')
+    overview_text_ads_links = ManyWebElements(xpath='//div[contains(@class, "TextItemStyles__info_link")]/a')
+    overview_all_titles = ManyWebElements(xpath='//div[@type="secondary"]')
+    landing_fast_link = WebElement(xpath='(//div[@type="primary"]/a)[1]')
+    landing_ads_examples = ManyWebElements(xpath='//div[contains(@class, "NoDataSamplesLoop__ad_")]')
+    creative_target_url = WebElement(xpath='//div[@class="asns-creative-target-url"]')
+    next_ads = WebElement(xpath='//div[contains(@class, "creative-popup__next")]')
+    advertisers_links = ManyWebElements(xpath='//a[@class="asns-js-cross-link asns-publisher-detail"]')
+    overview_main_info = WebElement(xpath='//div[contains(@class, "OverviewLayoutStyles__ranks")]')
+    cross_ads_count_links = ManyWebElements(xpath='//a[@class="asns-publisher-link asns-js-cross-link"]')
+    cross_image_ads = ManyWebElements(xpath='//img[@class="asns-table-media-ad-cell__image"]')
+    cross_table_lines = ManyWebElements(xpath='//*[contains(@class,"asns-table-media-ad-cell__preview")]')
+    export_type_first = WebElement(xpath='(//button[contains(@class, "exportTo")])[1]')
+    keywords_advertiser_links = ManyWebElements(xpath='//tr/td[2]//a[contains(text(),".")]')
+    upgrade_to_business_button = ManyWebElements(xpath='//span[text()="Upgrade to Business"]')
+    see_all_features_links = ManyWebElements(xpath='//a[text()="See all features"]')
+    upgrade_links = ManyWebElements(xpath='//span[text()="Upgrade"]')
+    ads_count = WebElement(xpath='(//div//h4//span)[1]')
+    pubs_count = WebElement(xpath='(//div//h4//span)[2]')
+    times_seen_info = WebElement(xpath='(//div//h4//span)[3]')
+    first_seen_info = WebElement(xpath='(//div//h4//span)[4]')
+    last_seen_info = WebElement(xpath='(//div//h4//span)[5]')
+    contries_list = ManyWebElements(xpath='//div[contains(@class, "legend_country")]/div')
+    contries_percents = ManyWebElements(xpath='//div[contains(@class, "legend_percent")]/div')
+    countries_numbers = ManyWebElements(xpath='//div[contains(@class, "legend_total")]/div')
+    ad_types = ManyWebElements(xpath='//div[contains(@class, "AdTypeChartStyles__ad_type")]//span')
+    devices_types = ManyWebElements(xpath='//div[contains(@class, "DeviceStyles__device")]//span')
+    domains_list = ManyWebElements(xpath=('//div[contains(@class, "TableStyles__table_row__item")]'
+                                          '//a[contains(text(), ".")]'))
+    publishers_data = ManyWebElements(xpath='//div[contains(@class, "TableStyles__table_row__item")]//span')
+    ads_tab_main_numbers = ManyWebElements(xpath='//*[contains(@class, "asns-legend__number")]')
+    ads_table_data = ManyWebElements(xpath='//td[contains(@class, "asns-table-media-ad-cell--text")]')
+
+    # Landing page elements:
+    landing_pages_titles = ManyWebElements(xpath='//div[contains(@class,"asns-landing-title")]')
+    landing_pages_links = ManyWebElements(xpath='//div[contains(@class,"asns-landing-detail--url")]')
+    table_data_ads_count = ManyWebElements(xpath='//td[@data-test="ads"]')
+    table_data_times_seen = ManyWebElements(xpath='//td[@data-test="timesSeen"]')
+    table_data_days_seen = ManyWebElements(xpath='//td[@data-test="daysSeen"]')
+
+
+    check_pageobject = WebElement(xpath='(//*[@class, "profile-menu-item"])[0]')
+
+
+    def wait_page_loaded(self, timeout=600, check_js_complete=True,
+                         check_page_changes=True, check_images=False,
+                         wait_for_element=None,
+                         wait_for_xpath_to_disappear=''):
+        if not wait_for_xpath_to_disappear:
+            super(WebPageDA, self).wait_page_loaded(timeout=timeout,
+                wait_for_xpath_to_disappear='//*[contains(@class, "asns-spinner")]')
+            # self.check_js_errors()
+
+    def check_js_errors(self, ignore_list=None):
+        if not ignore_list:
+            super(WebPageDA, self).check_js_errors(ignore_list=KNOWN_JS_ISSUES)
+
+    def search(self, search_query):
+        self.search_field.click()
+        element = self._web_driver.switch_to.active_element
+        element.send_keys(search_query)
+        self.search_button.click()
+        self.wait_page_loaded()
+
+    def set_filter_by(self, filter_by):
+        self.filter_by.click()
+        xpath = '//div[contains(@class, "option-ex-text") and text()="{0}"]'.format(filter_by)
+        self._web_driver.find_element_by_xpath(xpath).click()
+
+    def set_filter_method(self, filter_method):
+        self.filter_method.click()
+        xpath = '//div[contains(@class, "option-ex-text") and text()="{0}"]'.format(filter_method)
+        self._web_driver.find_element_by_xpath(xpath).click()
+
+    def configure_advanced_filter(self, filter_id, params):
+        default_options = ['Include', 'Ad', 'Text Contains']
+
+        for i, value in enumerate(params):
+            xpath = ('(//div[contains(@class, "item__layout")])[{0}]'
+                     '//div[text()="{1}"]').format(filter_id, default_options[i])
+            xpath_element = ('//div[contains(@class, "option-ex-text")'
+                             'and text()="{0}"]').format(value)
+            self._web_driver.find_element_by_xpath(xpath).click()
+            self._web_driver.find_element_by_xpath(xpath_element).click()
+
+    def set_page_size(self, page_size=10):
+        xpath_pattern = ('//div[text()="{0}" and (contains(@class, "option")'
+                         'or contains(@class, "select"))]')
+        self._web_driver.find_element_by_xpath(xpath_pattern.format('10')).click()
+        self._web_driver.find_element_by_xpath(xpath_pattern.format(page_size)).click()
+
+        self.wait_page_loaded()

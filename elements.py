@@ -87,19 +87,21 @@ class WebElement(object):
         except:
             print(colored('Element not visible!', 'red'))
 
-        """  # TODO: remove this code if it works fine.
         if element:
-            js = 'return (arguments[0].offsetHeight === 0 && arguments[0].offsetWidth === 0);'
+            js = ('return (!(arguments[0].offsetParent === null) && '
+                  '!(window.getComputedStyle(arguments[0]) === "none") &&'
+                  'arguments[0].offsetWidth > 0 && arguments[0].offsetHeight > 0'
+                  ');')
             visibility = self._web_driver.execute_script(js, element)
             iteration = 0
 
-            while not visibility and iteration < timeout * 10:
-                time.sleep(0.1)
+            while not visibility and iteration < 10:
+                time.sleep(0.5)
 
                 iteration += 1
 
                 visibility = self._web_driver.execute_script(js, element)
-        """
+                print('Element {0} visibility: {1}'.format(self._locator, visibility))
 
         return element
 
@@ -107,7 +109,13 @@ class WebElement(object):
         """ Send keys to the element. """
 
         element = self.find()
-        element.send_keys(keys)
+
+        if element:
+            element.clear()
+            element.send_keys(keys)
+        else:
+            msg = 'Element with locator {0} not found'
+            raise AttributeError(msg.format(self._locator))
 
     def get_text(self):
         """ Get text of the element. """
