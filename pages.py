@@ -107,7 +107,7 @@ class WebPage(object):
 
         # Wait until page loaded (and scroll it, to make sure all objects will be loaded):
         while not page_loaded:
-            time.sleep(0.1)
+            time.sleep(0.5)
             k += 1
 
             if check_js_complete:
