@@ -108,6 +108,8 @@ class WebElement(object):
     def send_keys(self, keys):
         """ Send keys to the element. """
 
+        keys = keys.replace('\n', '\ue007')
+
         element = self.find()
 
         if element:
