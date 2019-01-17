@@ -3,7 +3,6 @@
 
 # TODO: write article about __elements nasledovanie hack.
 
-
 import time
 from termcolor import colored
 
@@ -19,16 +18,6 @@ class WebPage(object):
     def __init__(self, web_driver, url=''):
         self._web_driver = web_driver
         self.get(url)
-
-        scr = 'var performance = window.performance || window.mozPerformance || window.msPerformance || window.webkitPerformance || {}; var network = performance.getEntries() || {}; return network;'
-        res = self._web_driver.execute_script(scr)
-
-        print(res)
-
-        res2 = self._web_driver.execute_script(scr)
-
-        # assert res == res2
-        # assert res == ''
 
     def __setattr__(self, name, value):
         if not name.startswith('_'):
@@ -119,7 +108,8 @@ class WebPage(object):
     def wait_page_loaded(self, timeout=60, check_js_complete=True,
                          check_page_changes=True, check_images=False,
                          wait_for_element=None,
-                         wait_for_xpath_to_disappear=''):
+                         wait_for_xpath_to_disappear='',
+                         long_sleep=2):
         """ This function waits until the page will be completely loaded.
             We use many different ways to detect is page loaded or not:
 
@@ -133,6 +123,9 @@ class WebPage(object):
         page_loaded = False
         double_check = False
         k = 0
+
+        if long_sleep:
+            time.sleep(long_sleep)
 
         # Get source code of the page to track changes in HTML:
         source = ''
