@@ -5,7 +5,7 @@
 
 
 import time
-from elements import WebElement, ManyWebElements
+from termcolor import colored
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -19,6 +19,16 @@ class WebPage(object):
     def __init__(self, web_driver, url=''):
         self._web_driver = web_driver
         self.get(url)
+
+        scr = 'var performance = window.performance || window.mozPerformance || window.msPerformance || window.webkitPerformance || {}; var network = performance.getEntries() || {}; return network;'
+        res = self._web_driver.execute_script(scr)
+
+        print(res)
+
+        res2 = self._web_driver.execute_script(scr)
+
+        # assert res == res2
+        # assert res == ''
 
     def __setattr__(self, name, value):
         if not name.startswith('_'):
@@ -51,20 +61,44 @@ class WebPage(object):
 
     def scroll_down(self, offset=0):
         """ Scroll the page down. """
-        raise NotImplemented
+
+        if offset:
+            self._web_driver.execute_script('window.scrollTo(0, {0});'.format(offset))
+        else:
+            self._web_driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
 
     def scroll_up(self, offset=0):
         """ Scroll the page up. """
-        raise NotImplemented
+
+        if offset:
+            self._web_driver.execute_script('window.scrollTo(0, -{0});'.format(offset))
+        else:
+            self._web_driver.execute_script('window.scrollTo(0, -document.body.scrollHeight);')
 
     def switch_to_iframe(self, iframe):
         """ Switch to iframe by it's name. """
 
         self._web_driver.switch_to.frame(iframe)
 
-    def switch_out_frame(self):
+    def switch_out_iframe(self):
         """ Cancel iframe focus. """
         self._web_driver.switch_to.default_content()
+
+    def get_current_url(self):
+        """ Returns current browser URL. """
+
+        return self._web_driver.current_url
+
+    def get_page_source(self):
+        """ Returns current page body. """
+
+        source = ''
+        try:
+            source = self._web_driver.page_source
+        except:
+            print(colored('Con not get page source', 'red'))
+
+        return source
 
     def check_js_errors(self, ignore_list=None):
         """ This function checks JS errors on the page. """
@@ -97,8 +131,10 @@ class WebPage(object):
         """
 
         page_loaded = False
+        double_check = False
         k = 0
 
+        # Get source code of the page to track changes in HTML:
         source = ''
         try:
             source = self._web_driver.page_source
@@ -151,6 +187,11 @@ class WebPage(object):
                     pass  # Ignore timeout errors
 
             assert k < timeout, 'The page loaded more than {0} seconds!'.format(timeout)
+
+            # Check two times that page completely loaded:
+            if page_loaded and not double_check:
+                page_loaded = False
+                double_check = True
 
         # Go up:
         self._web_driver.execute_script('window.scrollTo(document.body.scrollHeight, 0);')
