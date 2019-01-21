@@ -13,6 +13,7 @@ class WebElement(object):
 
     _locator = ('', '')
     _web_driver = None
+    _page = None
     _timeout = 10
     _wait_after_click = False  # TODO: how we can wait after click?
 
@@ -163,6 +164,9 @@ class WebElement(object):
         else:
             msg = 'Element with locator {0} not found'
             raise AttributeError(msg.format(self._locator))
+
+        if self._wait_after_click:
+            self._page.wait_page_loaded()
 
     def right_mouse_click(self, x_offset=0, y_offset=0, hold_seconds=0):
         """ Click right mouse button on the element. """

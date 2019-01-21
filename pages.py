@@ -13,7 +13,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class WebPage(object):
 
-    _web_driver = 'my web driver'
+    _web_driver = None
 
     def __init__(self, web_driver, url=''):
         self._web_driver = web_driver
@@ -30,6 +30,7 @@ class WebPage(object):
 
         if not item.startswith('_') and not callable(attr):
             attr._web_driver = self._web_driver
+            attr._page = self
 
         return attr
 
@@ -109,7 +110,7 @@ class WebPage(object):
                          check_page_changes=True, check_images=False,
                          wait_for_element=None,
                          wait_for_xpath_to_disappear='',
-                         long_sleep=2):
+                         sleep_time=2):
         """ This function waits until the page will be completely loaded.
             We use many different ways to detect is page loaded or not:
 
@@ -124,8 +125,8 @@ class WebPage(object):
         double_check = False
         k = 0
 
-        if long_sleep:
-            time.sleep(long_sleep)
+        if sleep_time:
+            time.sleep(sleep_time)
 
         # Get source code of the page to track changes in HTML:
         source = ''
