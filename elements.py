@@ -203,6 +203,14 @@ class WebElement(object):
         # Scroll page to the element:
         self._web_driver.execute_script("arguments[0].scrollIntoView();", element)
 
+    def delete(self):
+        """ Deletes element from the page. """
+
+        element = self.find()
+
+        # Delete element:
+        self._web_driver.execute_script("arguments[0].remove();", element)
+
 
 class ManyWebElements(WebElement):
 

@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 # -*- encoding=utf8 -*-
 
-# TODO: write article about __elements nasledovanie hack.
-
 import time
 from termcolor import colored
 
