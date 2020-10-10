@@ -7,6 +7,7 @@ from termcolor import colored
 from selenium.webdriver import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
 
 
 class WebElement(object):
@@ -200,8 +201,11 @@ class WebElement(object):
 
         element = self.find()
 
-        # Scroll page to the element:
+        # Scroll page to the element (option #1):
         self._web_driver.execute_script("arguments[0].scrollIntoView();", element)
+        
+        # Scroll to element (option #2 - sometimes it is only one working solution)
+        # element.send_keys(Keys.DOWN)
 
     def delete(self):
         """ Deletes element from the page. """
