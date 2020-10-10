@@ -45,7 +45,7 @@ class WebPage(object):
         self.wait_page_loaded()
 
     def screenshot(self, file_name='screenshot.png'):
-        self._web_driver.screenshot(file_name)
+        self._web_driver.save_screenshot(file_name)
 
     def scroll_down(self, offset=0):
         """ Scroll the page down. """
