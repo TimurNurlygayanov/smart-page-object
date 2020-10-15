@@ -23,7 +23,7 @@ class WebElement(object):
         self._wait_after_click = wait_after_click
 
         for attr in kwargs:
-            self._locator = (str(attr), str(kwargs.get(attr)))
+            self._locator = (str(attr).replace('_', ' '), str(kwargs.get(attr)))
 
     def find(self, timeout=10):
         """ Find element on the page. """
